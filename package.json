@@ -1,0 +1,14 @@
+{
+    "name": "OWL - Over-engineered WishList",
+    "private": "true",
+    "scripts": {
+        "start:api": "tsx packages/api/src/index.ts"
+    },
+    "workspaces": [
+        "packages/*"
+    ],
+    "dependencies": {
+        "biome": "^0.2.2",
+        "nodemon": "^3.1.14"
+    }
+}

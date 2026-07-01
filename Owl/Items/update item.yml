@@ -1,0 +1,22 @@
+info:
+  name: update item
+  type: http
+  seq: 5
+
+http:
+  method: PUT
+  url: http://localhost:3000/api/update-item/7
+  body:
+    type: json
+    data: |-
+      {
+        "name": "wooden chair",
+        "description": "sturdy and wooden, a nice place to sit"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,36 @@
+{
+    "$schema": "https://www.schemastore.org/tsconfig",
+    "_version": "24.0.0",
+    "compilerOptions": {
+        "lib": [
+            "es2024",
+            "ESNext.Array",
+            "ESNext.Collection",
+            "ESNext.Iterator",
+            "ESNext.Promise"
+        ],
+        "module": "nodenext",
+        "target": "es2024",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "moduleResolution": "node16",
+        /* Basic Options */
+        "incremental": true,
+        "declaration": true,
+        "allowJs": true,
+        "noEmit": true,
+        /* Strict Type-Checking Options */
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": false,
+        "noImplicitThis": true,
+        "alwaysStrict": true,
+        "resolveJsonModule": true,
+        /* Experimental Options */
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": false
+    }
+}

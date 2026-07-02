@@ -2,13 +2,23 @@
     "name": "OWL - Over-engineered WishList",
     "private": "true",
     "scripts": {
-        "start:api": "tsx packages/api/src/index.ts"
+        "start:api": "tsx packages/api/src/index.ts",
+        "start:ui": "turbo dev",
+        "build:ui": "turbo build",
+        "gen-npmrc": "npx npmrc-replace-env",
+        "dev:api": "nodemon packages/api/src/index.ts"
     },
     "workspaces": [
         "packages/*"
     ],
-    "dependencies": {
+    "devDependencies": {
         "biome": "^0.2.2",
-        "nodemon": "^3.1.14"
+        "nodemon": "^3.1.14",
+        "ts-node": "^10.9.2",
+        "turbo": "^2.9.18"
+    },
+    "packageManager": "npm@11.6.1",
+    "engines": {
+        "node": ">=20"
     }
 }

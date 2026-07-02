@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "radix-lyra",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/styles/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true
+  },
+  "iconLibrary": "font awesome",
+  "aliases": {
+    "components": "@owl/lib/components",
+    "utils": "@owl/lib/lib/utils",
+    "hooks": "@owl/lib/hooks",
+    "lib": "@owl/lib/lib",
+    "ui": "@owl/lib/components"
+  },
+  "rtl": false,
+  "menuColor": "default",
+  "menuAccent": "subtle"
+}

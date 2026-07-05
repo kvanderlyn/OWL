@@ -13,8 +13,13 @@ createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
     <StrictMode>
       <ThemeProvider>
-        <RouterProvider router={router} context={{ authentication: { getToken: () => useAuthStore.getState().token } }} />
+        <InnerApp />
       </ThemeProvider>
     </StrictMode>
   </QueryClientProvider>
 )
+
+function InnerApp() {
+  const auth = useAuthStore()
+  return <RouterProvider router={router} context={{ auth }} />
+}

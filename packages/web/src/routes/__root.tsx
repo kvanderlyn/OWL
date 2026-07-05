@@ -1,11 +1,12 @@
-import { useAuthStore } from '@/store/authStore'
+import { useAuthStore, type AuthState } from '@/store/authStore'
 import { Button, buttonVariants } from '@owl/lib/components/button'
 import { Link, Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { router } from "../router"
+import LogoutButton from '@/components/logoutButton'
 
 interface RouterContext {
-    authentication: { getToken: () => string | null }
+    auth: AuthState
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
@@ -13,15 +14,15 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 })
 
 function RootComponent() {
-    const { loadSession, signout, token } = useAuthStore()
+    const { loadSession } = useAuthStore()
     useEffect(() => {
-        loadSession()
+        loadSession().then(() => router.invalidate())
     }, [])
     return (
         <div className='w-screen h-screen bg-accent'>
-            <div className='flex space-x-4'>
+            {/* <div className='flex space-x-4'>
                 <Link
-                    className={buttonVariants({ variant: "link" })}
+                    className="text-sm text-primary hover:underline py-1.5"
                     to="/"
                     activeProps={{
                         className: 'font-bold',
@@ -30,7 +31,7 @@ function RootComponent() {
                 >
                     Home </Link>
                 <Link
-                    className={buttonVariants({ variant: "link" })}
+                    className="text-sm text-primary hover:underline py-1.5"
                     to="/dashboard"
                     activeProps={{
                         className: 'font-bold',
@@ -38,30 +39,19 @@ function RootComponent() {
                     activeOptions={{ exact: true }}
                 >
                     Dashboard </Link>
-                {token !== null ? <Button type='button' variant={"link"} onClick={() => signout()} children="Sign Out" /> : <Link
-                    className={buttonVariants({ variant: "link" })}
+                {token !== null ? <LogoutButton /> : <Link
+                    className="text-sm text-primary hover:underline py-1.5"
                     to="/dashboard"
                     activeProps={{
                         className: 'font-bold',
                     }}
-                    activeOptions={{ exact: true }}
                 >
-                    Dashboard </Link>}
-            </div>
-            <div className='w-full max-w-4xl mx-auto'>
+                    Log In </Link>}
+            </div> */}
+            <div>
                 <Outlet />
             </div>
         </div>
     )
 }
 
-function LogoutButton() {
-    const { signout } = useAuthStore()
-    function handleLogout() {
-        signout();
-        router.invalidate()
-    }
-    return (
-        <Button>Log Out</Button>
-    )
-}

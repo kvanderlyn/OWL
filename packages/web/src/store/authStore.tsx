@@ -10,15 +10,15 @@ interface LoginDetails {
 export interface AuthState {
     user: User | null,
     token: string | null,
-    signin: (LoginDetails: LoginDetails) => void,
-    signout: () => void,
-    loadSession: () => void
+    login: (LoginDetails: LoginDetails) => void,
+    logout: () => Promise<void>,
+    loadSession: () => Promise<void>
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
     user: null,
     token: null,
-    signin: async (LoginDetails: LoginDetails) => {
+    login: async (LoginDetails: LoginDetails) => {
         await authClient.signIn.username({
             ...LoginDetails, fetchOptions: {
                 onSuccess: (res) => {
@@ -32,7 +32,7 @@ export const useAuthStore = create<AuthState>((set) => ({
             }
         })
     },
-    signout: async () => {
+    logout: async () => {
         await authClient.signOut({
             fetchOptions: {
                 onSuccess: () => {
@@ -45,5 +45,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     loadSession: async () => {
         const { data: session } = await authClient.getSession()
         set((state) => ({ ...state, user: session?.user, token: session?.session.token }))
+        console.log('session loaded');
+
     }
 }))

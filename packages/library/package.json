@@ -11,6 +11,8 @@
   "dependencies": {
     "@awesome.me/kit-25b3efc452": "^1.0.4",
     "@fontsource-variable/public-sans": "^5.2.7",
+    "@fortawesome/fontawesome-svg-core": "^7.3.0",
+    "@fortawesome/react-fontawesome": "^3.3.1",
     "@tabler/icons-react": "^3.44.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

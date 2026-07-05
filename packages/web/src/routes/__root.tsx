@@ -1,9 +1,7 @@
 import { useAuthStore, type AuthState } from '@/store/authStore'
-import { Button, buttonVariants } from '@owl/lib/components/button'
-import { Link, Outlet, createRootRouteWithContext } from '@tanstack/react-router'
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { router } from "../router"
-import LogoutButton from '@/components/logoutButton'
 
 interface RouterContext {
     auth: AuthState

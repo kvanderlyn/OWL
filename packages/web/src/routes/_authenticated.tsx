@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, redirect, type LinkOptions } from '@tanstack/react-router'
-import Logo from "../assets/OWL_Mark_v3.svg"
+import Logo from "../assets/OWL_Mark_v4.svg"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, useSidebar } from "@owl/lib/components/sidebar"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faChevronRight, faGear, faPaperPlane, faSidebar } from "@awesome.me/kit-25b3efc452/icons/classic/light"

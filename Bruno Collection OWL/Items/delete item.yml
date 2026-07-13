@@ -1,11 +1,11 @@
 info:
   name: delete item
   type: http
-  seq: 6
+  seq: 5
 
 http:
   method: DELETE
-  url: http://localhost:3000/api/delete-item/7
+  url: http://localhost:3000/api/items/delete-item/7
   auth: inherit
 
 settings:

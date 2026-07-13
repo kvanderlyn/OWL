@@ -1,6 +1,5 @@
 import { authClient } from "@/lib/auth-client"
 import { Button } from "@owl/lib/components/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@owl/lib/components/card"
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@owl/lib/components/field"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@owl/lib/components/input-group"
 import { Input } from "@owl/lib/components/input"
@@ -37,7 +36,7 @@ function RegistrationForm() {
         confirmPassword: string
     }
     // const navigate = useNavigate()
-    const { register, handleSubmit, formState: { errors, isValid }, watch, reset } = useForm<SignupFormInput>({ mode: "onBlur", defaultValues: { email: "jsnow@test.com", name: "Jon Snow", "username": "jsnow", "password": "password123", "confirmPassword": "password123" } })
+    const { register, handleSubmit, formState: { errors, isValid }, watch, reset } = useForm<SignupFormInput>({ mode: "onBlur" })
     const onSubmit: SubmitHandler<SignupFormInput> = data => {
         if (isValid) {
             signupMutation(data);

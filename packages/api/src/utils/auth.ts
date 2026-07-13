@@ -17,5 +17,14 @@ export const auth = betterAuth({
     plugins: [
         username(),
         admin()
-    ]
+    ],
+    user: {
+        additionalFields: {
+            birthday: {
+                type: "date",
+                required: false,
+                input: true
+            }
+        }
+    }
 })

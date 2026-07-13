@@ -1,7 +1,7 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router"
 import owl from '../assets/owls/owl_1.jpg'
 
-import Logo from "../assets/OWL_Mark_v3.svg?react"
+import Logo from "../assets/OWL_Mark_v4.svg?react"
 export const Route = createFileRoute('/_login')({
   component: RouteComponent,
 })

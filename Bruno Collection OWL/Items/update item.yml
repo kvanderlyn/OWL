@@ -1,11 +1,11 @@
 info:
   name: update item
   type: http
-  seq: 5
+  seq: 4
 
 http:
   method: PUT
-  url: http://localhost:3000/api/update-item/7
+  url: http://localhost:3000/api/items/update-item/7
   body:
     type: json
     data: |-

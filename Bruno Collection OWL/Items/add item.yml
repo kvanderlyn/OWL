@@ -5,13 +5,13 @@ info:
 
 http:
   method: POST
-  url: http://localhost:3000/api/add-item
+  url: http://localhost:3000/api/items/add-item
   body:
     type: json
     data: |-
       {
-        "name": "chair",
-        "description": "sturdy and wooden, a nice place to sit"
+        "name": "table",
+        "description": "sturdy and wooden, a nice place to put things"
       }
   auth: inherit
 

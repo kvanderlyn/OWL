@@ -1,29 +1,22 @@
 {
-    "linter": {
-        "enabled": true,
-        "domains": {
-            "drizzle": "recommended",
-            "react": "recommended",
-            "turborepo": "recommended"
-        },
-        "rules": {
-            "recommended": true
-        },
-        "includes": [
-            "**",
-            "!test/**"
-        ]
-    },
-    "formatter": {
-        "lineWidth": 120,
-        "indentStyle": "space",
-        "indentWidth": 6
-    },
-    "files": {
-        "includes": [
-            "src/**/*.js",
-            "test/**/*.js",
-            "!**/*.min.js"
-        ]
-    }
+      "linter": {
+            "enabled": true,
+            "domains": {
+                  "drizzle": "recommended",
+                  "react": "recommended",
+                  "turborepo": "recommended"
+            },
+            "rules": {
+                  "preset": "recommended"
+            },
+            "includes": ["**", "!test/**"]
+      },
+      "formatter": {
+            "lineWidth": 120,
+            "indentStyle": "space",
+            "indentWidth": 6
+      },
+      "files": {
+            "includes": ["src/**/*.{js,ts,jsx,tsx}", "test/**/*.{js,ts,jsx,tsx}", "!**/*.min.js"]
+      }
 }

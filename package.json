@@ -2,8 +2,7 @@
     "name": "OWL - Over-engineered WishList",
     "private": "true",
     "scripts": {
-        "start:api": "tsx packages/api/src/index.ts",
-        "start:ui": "turbo dev",
+        "dev:ui": "turbo dev",
         "build:ui": "turbo build",
         "gen-npmrc": "npx npmrc-replace-env",
         "dev:api": "nodemon packages/api/src/index.ts"

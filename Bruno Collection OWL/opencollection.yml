@@ -13,6 +13,18 @@ config:
         username: ""
         password: ""
       bypassProxy: ""
+
+request:
+  scripts:
+    - type: before-request
+      code: |-
+        // Retrieve the cookie string we stored during login
+        const authCookie = bru.getVar('savedAuthCookie');
+
+        if (authCookie) {
+          // Inject the cookie header directly into this outgoing request
+          req.setHeader('Cookie', authCookie);
+        }
 bundled: false
 extensions:
   bruno:

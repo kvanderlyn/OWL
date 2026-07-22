@@ -1,9 +1,32 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { fetchWrapper } from "@/api/fetchWrapper";
 
-export const Route = createFileRoute('/_authenticated/dashboard')({
-  component: RouteComponent,
-})
+export const Route = createFileRoute("/_authenticated/dashboard")({
+      component: RouteComponent,
+      loader: () => {
+            return {
+                  crumb: "Dashboard",
+            };
+      },
+});
 
 function RouteComponent() {
-  return <div>Hello "/_authenticated/dashboard"!</div>
+      const { data } = useQuery({
+            queryKey: ["health"],
+            queryFn: async () => {
+                  const res = await fetchWrapper("/me");
+                  if (res.status !== 200) {
+                        return { error: "data not found" };
+                  }
+                  return res.json();
+            },
+      });
+      console.log(data);
+      return (
+            <div>
+                  <title>OWL - Dashboard</title>
+                  Hello "/_authenticated/dashboard"!
+            </div>
+      );
 }

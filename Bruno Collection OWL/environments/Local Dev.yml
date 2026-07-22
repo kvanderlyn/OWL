@@ -1,0 +1,12 @@
+name: Local Dev
+variables:
+  - name: baseUrl
+    value: http://localhost:3000
+  - name: username
+    value: lilmouse
+  - name: password
+    value: password123
+  - name: sessionCookie
+    value: better-auth.session_token=mGB1FqIAPx4kHdaQKmHm0AQ4ftusCKbX.q1JhFfaqLmldIp36DFxNKbhK2hm7Mpy0u0UVRtug3RE%3D; Max-Age=604800; Domain=http://localhost:5173; Path=/; HttpOnly; SameSite=Lax
+  - name: origin
+    value: http://localhost:5173

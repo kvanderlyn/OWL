@@ -1,12 +1,20 @@
 import { Router } from "express";
-import { addItem, deleteItem, getAllItems, getItemById, updateItem } from "../handlers/itemHandlers";
-import { validateUserIdQuery } from "../middleware/validator-functions";
-import { getWishlistByUser } from "../handlers/wishlistHandlers";
+import {
+      createWishlist,
+      deleteWishlistByUserAndId,
+      getWishlistByUser,
+      updateWishlist,
+} from "../handlers/wishlistHandlers";
+import { validateIdInBody, validateNameInBody } from "../middleware/validator-functions";
 
-const itemRouter = Router()
+const wishlistRouter = Router();
 
-itemRouter.get('/', (req, res) => {
-    res.status(200).json({ "status": "OK!" })
-})
-itemRouter.get("/get-wishlist", validateUserIdQuery(), getWishlistByUser);
-export default itemRouter
+wishlistRouter.get("/", (_req, res) => {
+      res.status(200).json({ status: "OK!" });
+});
+wishlistRouter.get("/get-wishlists", getWishlistByUser);
+wishlistRouter.post("/create-wishlist", validateNameInBody(), createWishlist);
+wishlistRouter.delete("/remove-wishlist", validateIdInBody(), deleteWishlistByUserAndId);
+wishlistRouter.put("/rename-wishlist", validateIdInBody(), validateNameInBody(), updateWishlist);
+
+export default wishlistRouter;

@@ -1,19 +1,16 @@
 info:
-  name: add item
+  name: Create Wishlist
   type: http
   seq: 3
 
 http:
   method: POST
-  url: http://localhost:3000/api/items/add-item
+  url: "{{baseUrl}}/api/wishlists/create-wishlist"
   body:
     type: json
     data: |-
       {
-        "name": "Poster",
-        "note": "Anything related to spider man or marvel",
-        "rating": "4",
-        "wishlist_id": "1"
+        "name": "Christmas List"
       }
   auth: inherit
 

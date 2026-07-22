@@ -1,7 +1,8 @@
 import { useAuthStore, type AuthState } from '@/store/authStore'
-import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
+import { HeadContent, Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { router } from "../router"
+import logo from "../assets/OWL_Mark_v4.svg?url"
 
 interface RouterContext {
     auth: AuthState
@@ -9,6 +10,20 @@ interface RouterContext {
 
 export const Route = createRootRouteWithContext<RouterContext>()({
     component: RootComponent,
+    head: () => ({
+        meta: [
+            {
+                name: "OWL",
+                content: "Over-engineered Wish List App"
+            },
+            {
+                title: "OWL"
+            }
+        ],
+        links: [
+            { rel: 'icon', href: logo }
+        ]
+    })
 })
 
 function RootComponent() {
@@ -17,39 +32,14 @@ function RootComponent() {
         loadSession().then(() => router.invalidate())
     }, [])
     return (
-        <div className='w-screen h-screen bg-accent'>
-            {/* <div className='flex space-x-4'>
-                <Link
-                    className="text-sm text-primary hover:underline py-1.5"
-                    to="/"
-                    activeProps={{
-                        className: 'font-bold',
-                    }}
-                    activeOptions={{ exact: true }}
-                >
-                    Home </Link>
-                <Link
-                    className="text-sm text-primary hover:underline py-1.5"
-                    to="/dashboard"
-                    activeProps={{
-                        className: 'font-bold',
-                    }}
-                    activeOptions={{ exact: true }}
-                >
-                    Dashboard </Link>
-                {token !== null ? <LogoutButton /> : <Link
-                    className="text-sm text-primary hover:underline py-1.5"
-                    to="/dashboard"
-                    activeProps={{
-                        className: 'font-bold',
-                    }}
-                >
-                    Log In </Link>}
-            </div> */}
-            <div>
-                <Outlet />
+        <>
+            <HeadContent />
+            <div className='w-screen h-screen bg-accent'>
+                <div>
+                    <Outlet />
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 

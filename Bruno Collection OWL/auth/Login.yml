@@ -1,0 +1,40 @@
+info:
+  name: Login
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/auth/sign-in/username"
+  headers:
+    - name: Origin
+      value: "{{origin}}"
+  body:
+    type: json
+    data: |-
+      {
+        "username": "{{username}}",
+        "password": "{{password}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        // Grab the cookies from the incoming header (handles lowercase strings securely)
+        const cookies = res.headers['set-cookie'];
+
+        if (cookies) {
+          // If Express sends back an array, join it together into one string
+          const cookieString = Array.isArray(cookies) ? cookies.join('; ') : cookies;
+          
+          // Save it as a collection-wide variable (independent of environment bugs)
+          bru.setVar('savedAuthCookie', cookieString);
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

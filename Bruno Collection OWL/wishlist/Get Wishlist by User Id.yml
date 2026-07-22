@@ -1,0 +1,20 @@
+info:
+  name: Get Wishlist by User Id
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://localhost:3000/api/wishlists/get-wishlists
+  params:
+    - name: userId
+      value: NPKVSbuRiT70ihuBbf8fMuxgU4t8OYtZ
+      type: query
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

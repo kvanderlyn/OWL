@@ -1,0 +1,21 @@
+info:
+  name: Rename Wishlist
+  type: http
+  seq: 5
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/wishlists/rename-wishlist"
+  body:
+    type: json
+    data: |-
+      {
+        "id": 4
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

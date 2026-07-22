@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet } from "@tanstack/react-router"
+import { createFileRoute, Outlet } from "@tanstack/react-router"
 import owl from '../assets/owls/owl_1.jpg'
 
 import Logo from "../assets/OWL_Mark_v4.svg?react"

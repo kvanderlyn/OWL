@@ -1,3 +1,4 @@
+import type { InferSelectModel } from "drizzle-orm";
 import { integer, pgTable, real, smallint, text, varchar } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
 import { wishlist } from "./wishlist-schema";
@@ -16,3 +17,5 @@ export const items = pgTable("items", {
             .references(() => wishlist.id, { onDelete: "cascade" }),
       notes: text(),
 });
+
+export type dbItemType = InferSelectModel<typeof items>;

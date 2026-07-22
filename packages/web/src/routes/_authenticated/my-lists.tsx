@@ -49,9 +49,12 @@ import { useState } from "react";
 import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 import { ApiError } from "@/api/fetchWrapper";
 import { addItem, getItems } from "@/api/items";
-import type { ItemType, UserWishlist } from "@/api/types";
+import type { newItem, UserWishlist } from "@/api/types";
 import { createWishlist, getWishlists, removeWishlist, type WishlistObject } from "@/api/wishlists";
 import ConfirmDeleteDialog from "@/components/ConfirmDeleteDialog";
+import { DataTable } from "@/components/DataTable";
+import { userWishlistCols } from "@/components/dataTableColumns";
+
 export const Route = createFileRoute("/_authenticated/my-lists")({
       component: RouteComponent,
       loader: () => {
@@ -172,28 +175,10 @@ function RouteComponent() {
                                     {itemsLoading ? (
                                           <div>Loading</div>
                                     ) : (
-                                          <table>
-                                                <thead>
-                                                      <tr>
-                                                            <th>Item</th>
-                                                            <th>Cost</th>
-                                                            <th>Rating</th>
-                                                            <th>URL</th>
-                                                            <th>Notes</th>
-                                                      </tr>
-                                                </thead>
-                                                <tbody>
-                                                      {ItemList?.items.map((item) => (
-                                                            <tr key={`${item.id}`}>
-                                                                  <td>{String(item.name)}</td>
-                                                                  <td>{String(item.cost)}</td>
-                                                                  <td>{String(item.itemUrl ?? "—")}</td>
-                                                                  <td>{String(item.rating)}</td>
-                                                                  <td>{String(item.notes)}</td>
-                                                            </tr>
-                                                      ))}
-                                                </tbody>
-                                          </table>
+                                          <DataTable
+                                                columns={userWishlistCols}
+                                                data={ItemList ? ItemList?.items : []}
+                                          />
                                     )}
                               </CardContent>
                         </Card>
@@ -297,9 +282,9 @@ function AddItemDialog(props: { currentList: UserWishlist; onSubmit?: () => void
                   symbol: string;
             };
             cost: string;
-            url?: string;
+            itemUrl: string;
             rating: number;
-            notes?: string;
+            notes: string;
       }
       const {
             register,
@@ -315,7 +300,6 @@ function AddItemDialog(props: { currentList: UserWishlist; onSubmit?: () => void
                   rating: 0,
             },
       });
-
       const onSubmit: SubmitHandler<ItemTypeForm> = (data) => {
             if (isValid) {
                   const { cost, currency, ...rest } = data;
@@ -338,7 +322,7 @@ function AddItemDialog(props: { currentList: UserWishlist; onSubmit?: () => void
             reset: resetApiCall,
       } = useMutation({
             mutationKey: ["new-wishlist"],
-            mutationFn: async (formData: ItemType) => addItem(formData),
+            mutationFn: async (formData: newItem) => addItem(formData),
             onSuccess: () => {
                   setOpen(false);
                   props.onSubmit?.();
@@ -477,16 +461,16 @@ function AddItemDialog(props: { currentList: UserWishlist; onSubmit?: () => void
                                           <Field>
                                                 <FieldLabel>Item URL:</FieldLabel>
                                                 <Input
-                                                      {...register("url")}
-                                                      aria-invalid={errors.url ? "true" : "false"}
+                                                      {...register("itemUrl")}
+                                                      aria-invalid={errors.itemUrl ? "true" : "false"}
                                                 />
-                                                {errors.url && <FieldError>{errors.url.message}</FieldError>}
+                                                {errors.itemUrl && <FieldError>{errors.itemUrl.message}</FieldError>}
                                           </Field>
                                           <Field>
                                                 <FieldLabel>Notes:</FieldLabel>
                                                 <Textarea
                                                       {...register("notes")}
-                                                      aria-invalid={errors.url ? "true" : "false"}
+                                                      aria-invalid={errors.itemUrl ? "true" : "false"}
                                                 />
                                           </Field>
                                     </FieldGroup>

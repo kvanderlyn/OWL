@@ -1,8 +1,8 @@
-import type { items } from "../../../db/src/index";
+import type { dbItemType } from "../../../db/src/index";
 import { ApiError, fetchWrapper } from "./fetchWrapper";
-import { ERROR_CODES, type ItemType } from "./types";
+import { ERROR_CODES, type newItem } from "./types";
 
-export async function addItem(body: ItemType) {
+export async function addItem(body: newItem) {
       const res = await fetchWrapper("/api/items/add-item", {
             method: "POST",
             body: JSON.stringify(body),
@@ -18,7 +18,7 @@ export async function addItem(body: ItemType) {
       return res.json();
 }
 
-export async function getItems(wishlistId: number): Promise<{ items: (typeof items)[] }> {
+export async function getItems(wishlistId: number): Promise<{ items: dbItemType[] }> {
       const res = await fetchWrapper(`/api/items/get-items?wishlistId=${wishlistId}`);
       if (!res.ok) {
             throw new ApiError(`Error in fetchWrapper getting wishlists`, res.status);

@@ -8,10 +8,17 @@ export const ERROR_CODES = {
       408: "Request timed out, please try again",
 };
 
-export interface newItem extends Omit<dbItemType, "ownerId" | "id"> {
+export interface newItem extends Omit<dbItemType, "ownerId" | "id" | "createdAt" | "updatedAt"> {
       currency: string;
 }
-
+export interface UpdateItemBody {
+      name?: string | null;
+      cost?: number | null;
+      currency?: string | null;
+      rating?: number | null;
+      itemUrl?: string | null;
+      notes?: string | null;
+}
 export interface ClaimItem extends dbItemType {
       claimed: boolean;
       clamedBy?: string;

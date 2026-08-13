@@ -1,7 +1,7 @@
 info:
   name: add item
   type: http
-  seq: 3
+  seq: 2
 
 http:
   method: POST
@@ -10,10 +10,13 @@ http:
     type: json
     data: |-
       {
-        "name": "Poster",
-        "note": "Anything related to spider man or marvel",
-        "rating": "4",
-        "wishlist_id": "1"
+        "rating": 4,
+        "name": "Spider Man Poster",
+        "url": "",
+        "notes": "",
+        "cost": 5,
+        "currency": "USD",
+        "wishlistId": 2
       }
   auth: inherit
 

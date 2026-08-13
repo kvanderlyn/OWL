@@ -1,17 +1,17 @@
 info:
-  name: update item
+  name: Update Item
   type: http
   seq: 4
 
 http:
   method: PUT
-  url: http://localhost:3000/api/items/update-item/7
+  url: "{{baseUrl}}/api/items/update-item"
   body:
     type: json
     data: |-
       {
-        "name": "wooden chair",
-        "description": "sturdy and wooden, a nice place to sit"
+        "id": 16,
+        "name": "A shiny new item"
       }
   auth: inherit
 

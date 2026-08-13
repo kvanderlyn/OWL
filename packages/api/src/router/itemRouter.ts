@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { addItem, getItems } from "../handlers/itemHandlers";
+import { addItem, deleteItem, getItems, updateItem } from "../handlers/itemHandlers";
 import {
+      validateIdInBody,
       validateNameInBody,
       validateWishlistIdInBody,
       validateWishlistIdQuery,
@@ -13,5 +14,7 @@ itemRouter.get("/", (_req, res) => {
 });
 itemRouter.post("/add-item", validateNameInBody(), validateWishlistIdInBody(), addItem);
 itemRouter.get("/get-items", validateWishlistIdQuery(), getItems);
+itemRouter.put("/update-item", validateIdInBody(), updateItem);
+itemRouter.delete("/delete-item", validateIdInBody(), deleteItem);
 
 export default itemRouter;

@@ -10,3 +10,5 @@ variables:
     value: better-auth.session_token=mGB1FqIAPx4kHdaQKmHm0AQ4ftusCKbX.q1JhFfaqLmldIp36DFxNKbhK2hm7Mpy0u0UVRtug3RE%3D; Max-Age=604800; Domain=http://localhost:5173; Path=/; HttpOnly; SameSite=Lax
   - name: origin
     value: http://localhost:5173
+  - name: friendId
+    value: 8J3CUrcYMLzP6WPzaA6toh9IgMYsZUya

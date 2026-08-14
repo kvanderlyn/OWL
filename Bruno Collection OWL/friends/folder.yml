@@ -1,0 +1,10 @@
+info:
+  name: friends
+  type: folder
+  seq: 4
+
+request:
+  headers:
+    - name: friendId
+      value: 8J3CUrcYMLzP6WPzaA6toh9IgMYsZUya
+  auth: inherit

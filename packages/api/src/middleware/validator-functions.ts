@@ -38,3 +38,10 @@ export function formatValidatorErrorMessage(errorList: Result<ValidationError>) 
       });
       return errorString.join(" | ");
 }
+
+export function validateUsernameQuery() {
+      return query("username").escape();
+}
+export function validateNameQuery() {
+      return query("name").escape();
+}

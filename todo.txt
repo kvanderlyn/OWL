@@ -16,3 +16,7 @@
     - Action button is just delete
     - Clicking on a cell not in edit mode brings up the edit modal
     - Directions on the top of the page explain this functionality
+
+
+Friends functionality
+UserId1, UserId2, approved, date_created, primary key

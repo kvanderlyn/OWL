@@ -1,0 +1,26 @@
+info:
+  name: Add Friend
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/friends/add-friend"
+  body:
+    type: json
+    data: |-
+      {
+        "id": "{{friendId}}"
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: friendId
+      value: 8J3CUrcYMLzP6WPzaA6toh9IgMYsZUya
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

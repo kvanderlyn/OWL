@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginRegisterRouteImport } from './routes/_login.register'
 import { Route as LoginLoginRouteImport } from './routes/_login.login'
 import { Route as AuthenticatedMyListsRouteImport } from './routes/_authenticated/my-lists'
+import { Route as AuthenticatedFindFriendsRouteImport } from './routes/_authenticated/find-friends'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
 const LoginRoute = LoginRouteImport.update({
@@ -45,6 +46,12 @@ const AuthenticatedMyListsRoute = AuthenticatedMyListsRouteImport.update({
   path: '/my-lists',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedFindFriendsRoute =
+  AuthenticatedFindFriendsRouteImport.update({
+    id: '/find-friends',
+    path: '/find-friends',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -54,6 +61,7 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/find-friends': typeof AuthenticatedFindFriendsRoute
   '/my-lists': typeof AuthenticatedMyListsRoute
   '/login': typeof LoginLoginRoute
   '/register': typeof LoginRegisterRoute
@@ -61,6 +69,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/find-friends': typeof AuthenticatedFindFriendsRoute
   '/my-lists': typeof AuthenticatedMyListsRoute
   '/login': typeof LoginLoginRoute
   '/register': typeof LoginRegisterRoute
@@ -71,21 +80,25 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/_login': typeof LoginRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/find-friends': typeof AuthenticatedFindFriendsRoute
   '/_authenticated/my-lists': typeof AuthenticatedMyListsRoute
   '/_login/login': typeof LoginLoginRoute
   '/_login/register': typeof LoginRegisterRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/my-lists' | '/login' | '/register'
+  fullPaths:
+    '/' | '/dashboard' | '/find-friends' | '/my-lists' | '/login' | '/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/my-lists' | '/login' | '/register'
+  to:
+    '/' | '/dashboard' | '/find-friends' | '/my-lists' | '/login' | '/register'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/_login'
     | '/_authenticated/dashboard'
+    | '/_authenticated/find-friends'
     | '/_authenticated/my-lists'
     | '/_login/login'
     | '/_login/register'
@@ -141,6 +154,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMyListsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/find-friends': {
+      id: '/_authenticated/find-friends'
+      path: '/find-friends'
+      fullPath: '/find-friends'
+      preLoaderRoute: typeof AuthenticatedFindFriendsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -153,11 +173,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedFindFriendsRoute: typeof AuthenticatedFindFriendsRoute
   AuthenticatedMyListsRoute: typeof AuthenticatedMyListsRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedFindFriendsRoute: AuthenticatedFindFriendsRoute,
   AuthenticatedMyListsRoute: AuthenticatedMyListsRoute,
 }
 

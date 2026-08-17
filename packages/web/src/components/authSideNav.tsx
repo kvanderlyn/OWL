@@ -4,6 +4,7 @@ import {
       faArrowLeftFromBracket,
       faList,
       faUserGroup,
+      faUserMagnifyingGlass,
 } from "@awesome.me/kit-25b3efc452/icons/classic/solid";
 import { faGrid2 } from "@awesome.me/kit-25b3efc452/icons/utility/semibold";
 import { faCircleUser } from "@awesome.me/kit-25b3efc452/icons/vellum/solid";
@@ -35,11 +36,12 @@ import {
       SidebarMenuSubItem,
       useSidebar,
 } from "@owl/lib/components/sidebar";
+import { useQuery } from "@tanstack/react-query";
 import { Link, type LinkOptions } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { getFriends } from "@/api/friends";
 import { useAuthStore } from "@/store/authStore";
 import Logo from "../assets/OWL_Mark_v4.svg?react";
-import owl_img from "../assets/owls/owl_avatar_2.png";
 import { router } from "../router";
 
 interface NavLinkI {
@@ -61,6 +63,10 @@ interface NavUser {
 function AuthSideNav() {
       const { user } = useAuthStore();
       const defaultAvatar = <FontAwesomeIcon icon={faCircleUser} size="2xl" />;
+      const { data: friendsData } = useQuery({
+            queryKey: ["friends-list"],
+            queryFn: async () => getFriends(),
+      });
       const data: { user: NavUser; navMain: NavLinkI[] } = {
             user: {
                   name: user?.name || "",
@@ -79,28 +85,12 @@ function AuthSideNav() {
                         url: "/dashboard",
                         icon: faUserGroup,
                         isActive: false,
-                        items: [
-                              {
-                                    title: "Bobby",
-                                    url: "/dashboard",
-                              },
-                              {
-                                    title: "Sam",
-                                    url: "/dashboard",
-                              },
-                              {
-                                    title: "Molly",
-                                    url: "/dashboard",
-                              },
-                              {
-                                    title: "Kat",
-                                    url: "/dashboard",
-                              },
-                              {
-                                    title: "Aryan",
-                                    url: "/dashboard",
-                              },
-                        ],
+                  },
+                  {
+                        title: "Find Friends",
+                        url: "/find-friends",
+                        icon: faUserMagnifyingGlass,
+                        isActive: false,
                   },
                   {
                         title: "My Lists",
@@ -110,6 +100,39 @@ function AuthSideNav() {
                   },
             ],
       };
+      if (friendsData && friendsData.rows.length > 0) {
+            const friendsList: { url: LinkOptions["to"]; title: string }[] = friendsData.rows.map((row) => ({
+                  title: row.name,
+                  url: "/dashboard",
+            }));
+            data.navMain = [
+                  {
+                        title: "Dashboard",
+                        url: "/dashboard",
+                        icon: faGrid2,
+                        isActive: true,
+                  },
+                  {
+                        title: "Friends",
+                        url: "/dashboard",
+                        icon: faUserGroup,
+                        isActive: false,
+                        items: friendsList,
+                  },
+                  {
+                        title: "Find Friends",
+                        url: "/find-friends",
+                        icon: faUserMagnifyingGlass,
+                        isActive: false,
+                  },
+                  {
+                        title: "My Lists",
+                        url: "/my-lists",
+                        icon: faList,
+                        isActive: false,
+                  },
+            ];
+      }
       return (
             <Sidebar variant="inset" collapsible="icon">
                   <SidebarHeader>
@@ -273,7 +296,7 @@ function UserDropdown() {
                                           >
                                                 <Avatar className="h-8 w-8 rounded-lg">
                                                       <AvatarImage
-                                                            src={owl_img}
+                                                            src={`https://api.dicebear.com/10.x/critters/svg?scale=1.59&rotate=20,-20&seed=${user?.id}`}
                                                             alt={user?.name}
                                                             className={"rounded-lg"}
                                                       />
@@ -302,7 +325,7 @@ function UserDropdown() {
                                                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                                       <Avatar className="h-8 w-8 rounded-lg">
                                                             <AvatarImage
-                                                                  src={owl_img}
+                                                                  src={`https://api.dicebear.com/10.x/critters/svg?scale=1.59&rotate=20,-20&seed=${user?.id}`}
                                                                   alt={user?.name}
                                                                   className={"rounded-lg"}
                                                             />

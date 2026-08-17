@@ -1,5 +1,5 @@
 import { db, friends } from "@owl/db";
-import { and, eq, ilike, or, type SQLWrapper } from "drizzle-orm";
+import { and, asc, eq, ilike, or, type SQLWrapper } from "drizzle-orm";
 import type { NextFunction, Response } from "express";
 import { validationResult } from "express-validator";
 import { user } from "../../../db/src/schema/auth-schema";
@@ -26,20 +26,22 @@ export async function addFriend(req: AuthRequest, res: Response, next: NextFunct
             throw new ApiError("Already sent friend request to that user", 422);
       }
       try {
-            const friend = await db
+            const rows = await db
                   .insert(friends)
                   .values([
                         {
                               uid1: userId,
                               uid2: friendId,
+                              requesterId: userId,
                         },
                         {
                               uid2: userId,
                               uid1: friendId,
+                              requesterId: userId,
                         },
                   ])
                   .returning();
-            res.status(200).json({ friend });
+            res.status(200).json({ rows });
       } catch {
             next(new ApiError("Failed to add item.", 500));
       }
@@ -51,7 +53,7 @@ export async function getFriendList(req: AuthRequest, res: Response, next: NextF
             return next(new ApiError("User is not authenticated or is missing user ID", 400));
       }
       try {
-            const friendList = await db
+            const rows = await db
                   .select({
                         id: friends.id,
                         userId: friends.uid2,
@@ -62,7 +64,7 @@ export async function getFriendList(req: AuthRequest, res: Response, next: NextF
                   .from(friends)
                   .where(and(eq(friends.uid1, userId), eq(friends.isApproved, true)))
                   .leftJoin(user, eq(friends.uid2, user.id));
-            res.status(200).json({ friendList });
+            res.status(200).json({ rows });
       } catch {
             next(new ApiError("Failed to find matching users.", 500));
       }
@@ -74,7 +76,7 @@ export async function getPendingFriends(req: AuthRequest, res: Response, next: N
             return next(new ApiError("User is not authenticated or is missing user ID", 400));
       }
       try {
-            const friendList = await db
+            const rows = await db
                   .select({
                         id: friends.id,
                         userId: friends.uid2,
@@ -85,7 +87,7 @@ export async function getPendingFriends(req: AuthRequest, res: Response, next: N
                   .from(friends)
                   .where(and(eq(friends.uid1, userId), eq(friends.isApproved, false)))
                   .leftJoin(user, eq(friends.uid2, user.id));
-            res.status(200).json({ friendList });
+            res.status(200).json({ rows });
       } catch {
             next(new ApiError("Failed to find matching users.", 500));
       }
@@ -104,7 +106,7 @@ export async function updateFriend(req: AuthRequest, res: Response, next: NextFu
             return next(new ApiError("User is not authenticated or is missing user ID", 400));
       }
       try {
-            const updateFriends = await db
+            const rows = await db
                   .update(friends)
                   .set({ isApproved })
                   .where(
@@ -114,7 +116,7 @@ export async function updateFriend(req: AuthRequest, res: Response, next: NextFu
                         ),
                   )
                   .returning();
-            res.status(200).json({ updateFriends });
+            res.status(200).json({ rows });
       } catch {
             next(new ApiError("Failed to update item.", 500));
       }
@@ -132,7 +134,7 @@ export async function removeFriend(req: AuthRequest, res: Response, next: NextFu
             return next(new ApiError("User is not authenticated or is missing user ID", 400));
       }
       try {
-            const deleteFriends = await db
+            const rows = await db
                   .delete(friends)
                   .where(
                         or(
@@ -141,7 +143,7 @@ export async function removeFriend(req: AuthRequest, res: Response, next: NextFu
                         ),
                   )
                   .returning();
-            res.status(200).json({ deleteFriends });
+            res.status(200).json({ rows });
       } catch {
             next(new ApiError("Failed to update item.", 500));
       }
@@ -149,6 +151,10 @@ export async function removeFriend(req: AuthRequest, res: Response, next: NextFu
 
 export async function findFriend(req: AuthRequest, res: Response, next: NextFunction) {
       const result = validationResult(req);
+      const userId = req?.user?.id;
+      if (!userId) {
+            return next(new ApiError("User is not authenticated or is missing user ID", 400));
+      }
       if (!result.isEmpty()) {
             const validationErrorString = formatValidatorErrorMessage(result);
             return next(new ApiError(validationErrorString, 400));
@@ -169,9 +175,18 @@ export async function findFriend(req: AuthRequest, res: Response, next: NextFunc
       try {
             const rows = whereClauses.length
                   ? await db
-                          .select()
+                          .select({
+                                username: user.username,
+                                name: user.name,
+                                id: user.id,
+                                isApproved: friends.isApproved,
+                                friendRequest: friends.id,
+                                requesterId: friends.requesterId,
+                          })
                           .from(user)
                           .where(or(...whereClauses))
+                          .leftJoin(friends, and(eq(friends.uid1, user.id), eq(friends.uid2, userId)))
+                          .orderBy(asc(user.id))
                   : [];
             res.status(200).json({ rows });
       } catch {

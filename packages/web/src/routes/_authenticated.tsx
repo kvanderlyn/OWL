@@ -9,6 +9,9 @@ import { Breadcrumbs } from "../components/Breadcrumbs";
 
 export const Route = createFileRoute("/_authenticated")({
       beforeLoad: async ({ context, location }) => {
+            if (context.auth.isLoading) {
+                  return;
+            }
             const token = context.auth.token;
             if (!token) {
                   throw redirect({

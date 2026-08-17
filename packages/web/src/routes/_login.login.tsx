@@ -62,7 +62,7 @@ function LoginForm() {
             reset,
       } = useForm<SigninFormInterface>({
             mode: "onBlur",
-            defaultValues: { username: "jsnow", password: "password123" },
+            defaultValues: { username: "snoman", password: "password123" },
       });
       const onSubmit: SubmitHandler<SigninFormInterface> = (data) => {
             if (isValid) {

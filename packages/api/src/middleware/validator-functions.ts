@@ -45,3 +45,7 @@ export function validateUsernameQuery() {
 export function validateNameQuery() {
       return query("name").escape();
 }
+
+export function validateIdQuery() {
+      return query("id").notEmpty().isString().trim().escape();
+}

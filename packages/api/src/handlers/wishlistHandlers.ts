@@ -1,4 +1,4 @@
-import { db, items, wishlist } from "@owl/db";
+import { db, friends, items, wishlist } from "@owl/db";
 import { and, count, eq } from "drizzle-orm";
 import type { NextFunction, Response } from "express";
 import { validationResult } from "express-validator";
@@ -78,7 +78,7 @@ export async function updateWishlist(req: AuthRequest, res: Response, next: Next
       }
 }
 
-export async function getWishlistByUser(req: AuthRequest, res: Response, next: NextFunction) {
+export async function getCurrentUserWishlists(req: AuthRequest, res: Response, next: NextFunction) {
       const userId = req?.user?.id;
       if (!userId) {
             return next(new ApiError("User is not authenticated or is missing user ID", 400));
@@ -95,6 +95,29 @@ export async function getWishlistByUser(req: AuthRequest, res: Response, next: N
                   .leftJoin(items, eq(wishlist.id, items.wishlistId))
                   .groupBy(wishlist.id);
             res.status(200).json({ list });
+      } catch {
+            next(new ApiError("Failed to find wishlists for user.", 500));
+      }
+}
+
+export async function getFriendWishlistById(req: AuthRequest, res: Response, next: NextFunction) {
+      // Check if user is friend of target user
+      const userId = req?.user?.id;
+      if (!userId) {
+            return next(new ApiError("User is not authenticated or is missing user ID", 400));
+      }
+      const result = validationResult(req);
+      if (!result.isEmpty()) {
+            const validationErrorString = formatValidatorErrorMessage(result);
+            return next(new ApiError(validationErrorString, 400));
+      }
+      try {
+            const friendId = String(req.query.id);
+            const friendRow = await db
+                  .select()
+                  .from(friends)
+                  .where(and(eq(friends.uid1, userId), eq(friends.uid2, friendId), eq(friends.isApproved, true)));
+            res.status(200).json({ friendRow });
       } catch {
             next(new ApiError("Failed to find wishlists for user.", 500));
       }

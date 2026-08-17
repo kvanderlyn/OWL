@@ -13,10 +13,10 @@
     - Directions on the top of the page explain this functionality
 10. Fix auth (no flash of auth screen on reload, auto login of user after registration)
 11. Refactor friend search so that the friend status is a seperate call from the list of users
-12. Update Friends base page so that it shows a grid of all current friends
 13. Update the dashboard so it shows more useful information
 14. Add settings so users can set how long a claim is hidden by default, add their birthday and update their name/username
-
+15. Add filter to friends page
+16. Add sortby to all the APIs so the data comes back in a better order
 
 
 New Users

@@ -43,17 +43,17 @@ function RouteComponent() {
             mutationFn: async (formData: searchForm) => searchUsers({ ...formData }),
       });
       const { mutate: addFriendMutation, error: friendError } = useMutation({
-            mutationKey: ["new-wishlist"],
+            mutationKey: ["new-friend"],
             mutationFn: async (id: string): Promise<{ rows: dbFriend[] }> => addFriend(id),
             onSuccess: () => search(getValues()),
       });
       const { mutate: removeFriendMutation, error: removeFriendError } = useMutation({
-            mutationKey: ["new-wishlist"],
+            mutationKey: ["remove-friend"],
             mutationFn: async (id: string): Promise<{ rows: dbFriend[] }> => removeFriend(id),
             onSuccess: () => search(getValues()),
       });
       const { mutate: acceptFriendMutation, error: acceptFriendError } = useMutation({
-            mutationKey: ["new-wishlist"],
+            mutationKey: ["accept-friend"],
             mutationFn: async (id: string): Promise<{ rows: dbFriend[] }> => approveFriend(id),
             onSuccess: () => search(getValues()),
       });
@@ -93,9 +93,9 @@ function RouteComponent() {
                   );
             } else if (result.isApproved === false && result.requesterId === user?.id) {
                   return (
-                        <Button disabled variant={"outline"}>
+                        <Button variant={"outline"} onClick={() => removeFriend(result.id)}>
                               <FontAwesomeIcon icon={faHeartFilled} />
-                              <span className="my-2">Request Pending</span>
+                              <span className="my-2">Pending, cancel request?</span>
                         </Button>
                   );
             } else if (result.isApproved === false && result.requesterId !== user?.id) {

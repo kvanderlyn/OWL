@@ -1,5 +1,5 @@
 import { faStar } from "@awesome.me/kit-25b3efc452/icons/classic/light";
-import { faStar as faStarFilled } from "@awesome.me/kit-25b3efc452/icons/classic/solid";
+import { faHeartSlash, faStar as faStarFilled } from "@awesome.me/kit-25b3efc452/icons/classic/solid";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "@owl/lib/components/button";
@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@owl/lib/components/ca
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getItems } from "@/api/items";
 import { getUserByUsername } from "@/api/users";
 import { getWishlistsByUser } from "@/api/wishlists";
@@ -18,7 +18,7 @@ import type { dbItemType } from "../../../../db/src";
 export const Route = createFileRoute("/_authenticated/friends/$username")({
       loader: async ({ params }) => {
             const data = (await getUserByUsername(params.username)).rows[0];
-            const wishlist = await getWishlistsByUser(data.id);
+            const wishlist = (await getWishlistsByUser(data.id)).rows;
             return { data, wishlist, crumb: data.name };
       },
       component: RouteComponent,
@@ -29,12 +29,16 @@ function RouteComponent() {
             data: { name, username, id },
             wishlist,
       } = Route.useLoaderData();
-      const [currentList, setCurrentList] = useState(wishlist.rows[0]);
-      // const [currentItem, setCurrentItem] = useState<dbItemType>();
+      const [currentList, setCurrentList] = useState(wishlist[0]);
+      useEffect(() => {
+            setCurrentList(wishlist[0]);
+      }, [wishlist]);
+
       const { data: ItemList, isLoading: itemsLoading } = useQuery({
             queryKey: ["get-items", currentList.id],
             queryFn: () => getItems(Number(currentList.id)),
       });
+
       const userWishlistCols: ColumnDef<dbItemType>[] = [
             {
                   accessorKey: "name",
@@ -149,11 +153,17 @@ function RouteComponent() {
             },
       ];
       return (
-            <div className="typeset typeset-docs px-2">
+            <div className="typeset typeset-docs px-2" key={id}>
                   <h2>
                         <div className="flex flex-row space-x-2">
                               <UserAvatar userId={id} userName={name} />
                               <div>{`${name}'s Wishlists`}</div>
+                              <Button variant={"ghost"} className="px-0 py-0 hover:text-red-700">
+                                    <div className="hover:w-fit w-6 overflow-clip px-2 py-1">
+                                          <FontAwesomeIcon icon={faHeartSlash} className="mr-2" />
+                                          <span className="text-black!">Remove Friend</span>
+                                    </div>
+                              </Button>
                         </div>
                   </h2>
                   <div className="lg:flex space-y-4 lg:space-x-4">
@@ -163,7 +173,7 @@ function RouteComponent() {
                                           <CardTitle>Lists</CardTitle>
                                     </CardHeader>
                                     <CardContent className="space-y-2">
-                                          {wishlist.rows.map((wl) => (
+                                          {wishlist.map((wl) => (
                                                 <Button
                                                       onClick={() => {
                                                             setCurrentList(wl);

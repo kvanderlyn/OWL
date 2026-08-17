@@ -77,15 +77,15 @@ function AuthSideNav() {
                         isActive: true,
                   },
                   {
-                        title: "Friends",
-                        url: { to: "/friends" },
-                        icon: faUserGroup,
-                        isActive: false,
-                  },
-                  {
                         title: "Find Friends",
                         url: { to: "/find-friends" },
                         icon: faUserMagnifyingGlass,
+                        isActive: false,
+                  },
+                  {
+                        title: "My Friends",
+                        url: { to: "/friends" },
+                        icon: faUserGroup,
                         isActive: false,
                   },
                   {
@@ -97,12 +97,18 @@ function AuthSideNav() {
             ],
       };
       if (friendsData && friendsData.rows.length > 0) {
-            const friendsList: { url: LinkOptions; title: string }[] = friendsData.rows.map((row) => ({
+            const friendsList: { url: LinkOptions; title: string }[] = friendsData.rows.slice(0, 9).map((row) => ({
                   title: row.name,
                   url: { to: "/friends/$username", params: { username: row.username } },
             }));
-            data.navMain[1] = {
-                  title: "Friends",
+            friendsList.push({
+                  title: "All Friends",
+                  url: { to: "/friends" },
+            });
+            const friendIndex = data.navMain.findIndex((item) => item.title === "My Friends");
+
+            data.navMain[friendIndex] = {
+                  title: "My Friends",
                   url: { to: "/friends" },
                   icon: faUserGroup,
                   isActive: false,

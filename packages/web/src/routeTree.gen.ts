@@ -17,6 +17,9 @@ import { Route as LoginLoginRouteImport } from './routes/_login.login'
 import { Route as AuthenticatedMyListsRouteImport } from './routes/_authenticated/my-lists'
 import { Route as AuthenticatedFindFriendsRouteImport } from './routes/_authenticated/find-friends'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedFriendsRouteRouteImport } from './routes/_authenticated/friends.route'
+import { Route as AuthenticatedFriendsIndexRouteImport } from './routes/_authenticated/friends.index'
+import { Route as AuthenticatedFriendsUsernameRouteImport } from './routes/_authenticated/friends.$username'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/_login',
@@ -57,14 +60,35 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedFriendsRouteRoute =
+  AuthenticatedFriendsRouteRouteImport.update({
+    id: '/friends',
+    path: '/friends',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedFriendsIndexRoute =
+  AuthenticatedFriendsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedFriendsRouteRoute,
+  } as any)
+const AuthenticatedFriendsUsernameRoute =
+  AuthenticatedFriendsUsernameRouteImport.update({
+    id: '/$username',
+    path: '/$username',
+    getParentRoute: () => AuthenticatedFriendsRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/friends': typeof AuthenticatedFriendsRouteRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/find-friends': typeof AuthenticatedFindFriendsRoute
   '/my-lists': typeof AuthenticatedMyListsRoute
   '/login': typeof LoginLoginRoute
   '/register': typeof LoginRegisterRoute
+  '/friends/$username': typeof AuthenticatedFriendsUsernameRoute
+  '/friends/': typeof AuthenticatedFriendsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -73,35 +97,58 @@ export interface FileRoutesByTo {
   '/my-lists': typeof AuthenticatedMyListsRoute
   '/login': typeof LoginLoginRoute
   '/register': typeof LoginRegisterRoute
+  '/friends/$username': typeof AuthenticatedFriendsUsernameRoute
+  '/friends': typeof AuthenticatedFriendsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/_login': typeof LoginRouteWithChildren
+  '/_authenticated/friends': typeof AuthenticatedFriendsRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/find-friends': typeof AuthenticatedFindFriendsRoute
   '/_authenticated/my-lists': typeof AuthenticatedMyListsRoute
   '/_login/login': typeof LoginLoginRoute
   '/_login/register': typeof LoginRegisterRoute
+  '/_authenticated/friends/$username': typeof AuthenticatedFriendsUsernameRoute
+  '/_authenticated/friends/': typeof AuthenticatedFriendsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/dashboard' | '/find-friends' | '/my-lists' | '/login' | '/register'
+    | '/'
+    | '/friends'
+    | '/dashboard'
+    | '/find-friends'
+    | '/my-lists'
+    | '/login'
+    | '/register'
+    | '/friends/$username'
+    | '/friends/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/dashboard' | '/find-friends' | '/my-lists' | '/login' | '/register'
+    | '/'
+    | '/dashboard'
+    | '/find-friends'
+    | '/my-lists'
+    | '/login'
+    | '/register'
+    | '/friends/$username'
+    | '/friends'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/_login'
+    | '/_authenticated/friends'
     | '/_authenticated/dashboard'
     | '/_authenticated/find-friends'
     | '/_authenticated/my-lists'
     | '/_login/login'
     | '/_login/register'
+    | '/_authenticated/friends/$username'
+    | '/_authenticated/friends/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -168,16 +215,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/friends': {
+      id: '/_authenticated/friends'
+      path: '/friends'
+      fullPath: '/friends'
+      preLoaderRoute: typeof AuthenticatedFriendsRouteRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/friends/': {
+      id: '/_authenticated/friends/'
+      path: '/'
+      fullPath: '/friends/'
+      preLoaderRoute: typeof AuthenticatedFriendsIndexRouteImport
+      parentRoute: typeof AuthenticatedFriendsRouteRoute
+    }
+    '/_authenticated/friends/$username': {
+      id: '/_authenticated/friends/$username'
+      path: '/$username'
+      fullPath: '/friends/$username'
+      preLoaderRoute: typeof AuthenticatedFriendsUsernameRouteImport
+      parentRoute: typeof AuthenticatedFriendsRouteRoute
+    }
   }
 }
 
+interface AuthenticatedFriendsRouteRouteChildren {
+  AuthenticatedFriendsUsernameRoute: typeof AuthenticatedFriendsUsernameRoute
+  AuthenticatedFriendsIndexRoute: typeof AuthenticatedFriendsIndexRoute
+}
+
+const AuthenticatedFriendsRouteRouteChildren: AuthenticatedFriendsRouteRouteChildren =
+  {
+    AuthenticatedFriendsUsernameRoute: AuthenticatedFriendsUsernameRoute,
+    AuthenticatedFriendsIndexRoute: AuthenticatedFriendsIndexRoute,
+  }
+
+const AuthenticatedFriendsRouteRouteWithChildren =
+  AuthenticatedFriendsRouteRoute._addFileChildren(
+    AuthenticatedFriendsRouteRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
+  AuthenticatedFriendsRouteRoute: typeof AuthenticatedFriendsRouteRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFindFriendsRoute: typeof AuthenticatedFindFriendsRoute
   AuthenticatedMyListsRoute: typeof AuthenticatedMyListsRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedFriendsRouteRoute: AuthenticatedFriendsRouteRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFindFriendsRoute: AuthenticatedFindFriendsRoute,
   AuthenticatedMyListsRoute: AuthenticatedMyListsRoute,

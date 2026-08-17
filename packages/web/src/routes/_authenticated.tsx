@@ -20,6 +20,11 @@ export const Route = createFileRoute("/_authenticated")({
                   });
             }
       },
+      loader: () => {
+            return {
+                  crumb: "Dashboard",
+            };
+      },
       component: AuthWrapper,
 });
 

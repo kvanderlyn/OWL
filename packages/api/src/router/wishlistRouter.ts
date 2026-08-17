@@ -3,7 +3,7 @@ import {
       createWishlist,
       deleteWishlistByUserAndId,
       getCurrentUserWishlists,
-      getFriendWishlistById,
+      getWishlistByUserId,
       updateWishlist,
 } from "../handlers/wishlistHandlers";
 import { validateIdInBody, validateIdQuery, validateNameInBody } from "../middleware/validator-functions";
@@ -17,5 +17,5 @@ wishlistRouter.get("/get-wishlists", getCurrentUserWishlists);
 wishlistRouter.post("/create-wishlist", validateNameInBody(), createWishlist);
 wishlistRouter.delete("/remove-wishlist", validateIdInBody(), deleteWishlistByUserAndId);
 wishlistRouter.put("/rename-wishlist", validateIdInBody(), validateNameInBody(), updateWishlist);
-wishlistRouter.get("/get-friend-wishlist", validateIdQuery(), getFriendWishlistById);
+wishlistRouter.get("/get-friend-wishlist", validateIdQuery(), getWishlistByUserId);
 export default wishlistRouter;

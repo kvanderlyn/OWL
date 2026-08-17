@@ -1,7 +1,6 @@
 import { faHeart } from "@awesome.me/kit-25b3efc452/icons/classic/light";
 import { faHeart as faHeartFilled, faHeartSlash, faSearch } from "@awesome.me/kit-25b3efc452/icons/classic/solid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar, AvatarFallback, AvatarImage } from "@owl/lib/components/avatar";
 import { Button } from "@owl/lib/components/button";
 import { FieldError } from "@owl/lib/components/field";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@owl/lib/components/input-group";
@@ -13,6 +12,7 @@ import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 import { addFriend, approveFriend, removeFriend, searchUsers } from "@/api/friends";
 import type { dbFriend, friendResult } from "@/api/types";
 import AlertError from "@/components/AlertError";
+import UserAvatar from "@/components/UserAvatar";
 import { useAuthStore } from "@/store/authStore";
 export const Route = createFileRoute("/_authenticated/find-friends")({
       component: RouteComponent,
@@ -27,8 +27,8 @@ function RouteComponent() {
       const { user } = useAuthStore();
 
       const friendSearchOptions = [
-            { label: "Name", value: "name" },
             { label: "Username", value: "username" },
+            { label: "Name", value: "name" },
       ];
       interface searchForm {
             keyword: string;
@@ -198,13 +198,7 @@ function RouteComponent() {
                                     {searchResults.rows.map((result) => (
                                           <Item key={result.username} variant={"outline"}>
                                                 <ItemMedia>
-                                                      <Avatar size="lg" className="after:border-none">
-                                                            <AvatarImage
-                                                                  src={`https://api.dicebear.com/10.x/critters/svg?scale=1.59&rotate=20,-20&seed=${result.id}`}
-                                                                  className={"rounded-lg mt-0"}
-                                                            />
-                                                            <AvatarFallback>{result.name[0]}</AvatarFallback>
-                                                      </Avatar>
+                                                      <UserAvatar size="lg" userId={result.id} userName={result.name} />
                                                 </ItemMedia>
                                                 <ItemContent>
                                                       <ItemTitle>{result.name}</ItemTitle>

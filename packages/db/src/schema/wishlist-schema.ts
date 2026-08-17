@@ -1,3 +1,4 @@
+import type { InferSelectModel } from "drizzle-orm";
 import { index, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
 
@@ -18,3 +19,5 @@ export const wishlist = pgTable(
       },
       (table) => [index("wishlist_idx").on(table.ownerId)],
 );
+
+export type dbWishlistType = InferSelectModel<typeof wishlist>;

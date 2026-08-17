@@ -4,15 +4,10 @@ import { fetchWrapper } from "@/api/fetchWrapper";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
       component: RouteComponent,
-      loader: () => {
-            return {
-                  crumb: "Dashboard",
-            };
-      },
 });
 
 function RouteComponent() {
-      const { data } = useQuery({
+      useQuery({
             queryKey: ["health"],
             queryFn: async () => {
                   const res = await fetchWrapper("/me");
@@ -22,7 +17,6 @@ function RouteComponent() {
                   return res.json();
             },
       });
-      console.log(data);
       return (
             <div>
                   <title>OWL - Dashboard</title>

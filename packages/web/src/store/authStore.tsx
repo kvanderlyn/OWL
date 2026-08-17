@@ -1,4 +1,4 @@
-import type { User } from "better-auth";
+import type { User } from "@owl/api/src/utils/auth";
 import { create } from "zustand";
 import { authClient } from "@/lib/auth-client";
 
@@ -54,7 +54,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       },
       loadSession: async () => {
             const { data: session } = await authClient.getSession();
-            set((state) => ({ ...state, user: session?.user, token: session?.session.token }));
+            set((state) => ({
+                  ...state,
+                  user: session?.user ? { ...session.user, username: session.user.username ?? "" } : null,
+                  token: session?.session.token,
+            }));
             console.log("session loaded");
       },
 }));

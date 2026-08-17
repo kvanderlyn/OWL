@@ -1,5 +1,5 @@
 import { ApiError, fetchWrapper } from "./fetchWrapper";
-import { ERROR_CODES, type UserWishlist } from "./types";
+import { type dbWishlist, ERROR_CODES, type UserWishlist } from "./types";
 
 export interface WishlistObject {
       list: UserWishlist[];
@@ -36,6 +36,14 @@ export async function removeWishlist(id: string | number) {
       });
       if (!res.ok) {
             throw new ApiError(`Error in fetchWrapper deleting wishlist`, res.status);
+      }
+      return res.json();
+}
+
+export async function getWishlistsByUser(id: string): Promise<{ rows: dbWishlist[] }> {
+      const res = await fetchWrapper(`/api/wishlists/get-friend-wishlist?id=${id}`);
+      if (!res.ok) {
+            throw new ApiError(`Error in fetchWrapper getting wishlists`, res.status);
       }
       return res.json();
 }

@@ -1,4 +1,4 @@
-import type { dbFriendType, dbItemType } from "../../../db/src";
+import type { dbFriendType, dbItemType, dbWishlistType } from "../../../db/src";
 
 export const ERROR_CODES = {
       400: "There was a problem with your request",
@@ -41,11 +41,17 @@ export interface friendResult {
       requesterId: string | null;
 }
 
-export type dbFriend = dbFriendType;
-export interface friendListItem {
+export interface userDetails {
       id: string;
-      userId: string;
-      isApproved: boolean;
       name: string;
       username: string;
+}
+
+export type dbFriend = dbFriendType;
+
+export type dbWishlist = dbWishlistType;
+
+export interface friendListItem extends userDetails {
+      userId: string;
+      isApproved: boolean;
 }

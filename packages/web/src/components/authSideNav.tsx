@@ -1,4 +1,4 @@
-import { faChevronRight, faGear, faPaperPlane } from "@awesome.me/kit-25b3efc452/icons/classic/light";
+import { faBell, faChevronRight, faGear, faPaperPlane } from "@awesome.me/kit-25b3efc452/icons/classic/light";
 import {
       faAnglesUpDown,
       faArrowLeftFromBracket,
@@ -7,9 +7,8 @@ import {
       faUserMagnifyingGlass,
 } from "@awesome.me/kit-25b3efc452/icons/classic/solid";
 import { faGrid2 } from "@awesome.me/kit-25b3efc452/icons/utility/semibold";
-import { faCircleUser } from "@awesome.me/kit-25b3efc452/icons/vellum/solid";
+import type { faCircleUser } from "@awesome.me/kit-25b3efc452/icons/vellum/solid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar, AvatarFallback, AvatarImage } from "@owl/lib/components/avatar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@owl/lib/components/collapsible";
 import {
       DropdownMenu,
@@ -38,31 +37,29 @@ import {
 } from "@owl/lib/components/sidebar";
 import { useQuery } from "@tanstack/react-query";
 import { Link, type LinkOptions } from "@tanstack/react-router";
-import type { ReactNode } from "react";
 import { getFriends } from "@/api/friends";
 import { useAuthStore } from "@/store/authStore";
 import Logo from "../assets/OWL_Mark_v4.svg?react";
 import { router } from "../router";
+import UserAvatar from "./UserAvatar";
 
 interface NavLinkI {
       title: string;
-      url: LinkOptions["to"];
+      url: LinkOptions;
       icon: typeof faCircleUser;
       isActive: boolean;
       items?: {
             title: string;
-            url: LinkOptions["to"];
+            url: LinkOptions;
       }[];
 }
 interface NavUser {
       name: string;
       email: string;
-      avatar: ReactNode;
 }
 
 function AuthSideNav() {
       const { user } = useAuthStore();
-      const defaultAvatar = <FontAwesomeIcon icon={faCircleUser} size="2xl" />;
       const { data: friendsData } = useQuery({
             queryKey: ["friends-list"],
             queryFn: async () => getFriends(),
@@ -71,67 +68,46 @@ function AuthSideNav() {
             user: {
                   name: user?.name || "",
                   email: user?.email || "",
-                  avatar: defaultAvatar,
             },
             navMain: [
                   {
                         title: "Dashboard",
-                        url: "/dashboard",
+                        url: { to: "/dashboard" },
                         icon: faGrid2,
                         isActive: true,
                   },
                   {
                         title: "Friends",
-                        url: "/dashboard",
+                        url: { to: "/friends" },
                         icon: faUserGroup,
                         isActive: false,
                   },
                   {
                         title: "Find Friends",
-                        url: "/find-friends",
+                        url: { to: "/find-friends" },
                         icon: faUserMagnifyingGlass,
                         isActive: false,
                   },
                   {
                         title: "My Lists",
-                        url: "/my-lists",
+                        url: { to: "/my-lists" },
                         icon: faList,
                         isActive: false,
                   },
             ],
       };
       if (friendsData && friendsData.rows.length > 0) {
-            const friendsList: { url: LinkOptions["to"]; title: string }[] = friendsData.rows.map((row) => ({
+            const friendsList: { url: LinkOptions; title: string }[] = friendsData.rows.map((row) => ({
                   title: row.name,
-                  url: "/dashboard",
+                  url: { to: "/friends/$username", params: { username: row.username } },
             }));
-            data.navMain = [
-                  {
-                        title: "Dashboard",
-                        url: "/dashboard",
-                        icon: faGrid2,
-                        isActive: true,
-                  },
-                  {
-                        title: "Friends",
-                        url: "/dashboard",
-                        icon: faUserGroup,
-                        isActive: false,
-                        items: friendsList,
-                  },
-                  {
-                        title: "Find Friends",
-                        url: "/find-friends",
-                        icon: faUserMagnifyingGlass,
-                        isActive: false,
-                  },
-                  {
-                        title: "My Lists",
-                        url: "/my-lists",
-                        icon: faList,
-                        isActive: false,
-                  },
-            ];
+            data.navMain[1] = {
+                  title: "Friends",
+                  url: { to: "/friends" },
+                  icon: faUserGroup,
+                  isActive: false,
+                  items: friendsList,
+            };
       }
       return (
             <Sidebar variant="inset" collapsible="icon">
@@ -203,7 +179,7 @@ function Navlinks(props: { data: NavLinkI[] }) {
                                                                               <SidebarMenuSubItem key={subItem.title}>
                                                                                     <SidebarMenuSubButton
                                                                                           render={
-                                                                                                <Link to={subItem.url}>
+                                                                                                <Link {...subItem.url}>
                                                                                                       <span>
                                                                                                             {
                                                                                                                   subItem.title
@@ -225,7 +201,7 @@ function Navlinks(props: { data: NavLinkI[] }) {
                                     <SidebarMenuButton
                                           tooltip={item.title}
                                           key={item.title}
-                                          render={<Link to={item.url} />}
+                                          render={<Link {...item.url} />}
                                     >
                                           {item.icon && <FontAwesomeIcon icon={item.icon} />}
                                           <span>{item.title}</span>
@@ -255,7 +231,7 @@ function SecondaryNavLinks({
                                     <SidebarMenuItem key={item.title}>
                                           <SidebarMenuButton
                                                 render={
-                                                      <Link to={item.url}>
+                                                      <Link {...item.url}>
                                                             {" "}
                                                             <FontAwesomeIcon icon={item.icon} />{" "}
                                                             <span>{item.title}</span>{" "}
@@ -294,21 +270,12 @@ function UserDropdown() {
                                                 size="lg"
                                                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                                           >
-                                                <Avatar className="h-8 w-8 rounded-lg">
-                                                      <AvatarImage
-                                                            src={`https://api.dicebear.com/10.x/critters/svg?scale=1.59&rotate=20,-20&seed=${user?.id}`}
-                                                            alt={user?.name}
-                                                            className={"rounded-lg"}
-                                                      />
-                                                      <AvatarFallback className={"rounded-lg border"}>
-                                                            <span className="text-2xl">
-                                                                  <FontAwesomeIcon icon={faCircleUser} />
-                                                            </span>
-                                                      </AvatarFallback>
-                                                </Avatar>
+                                                <UserAvatar userId={user?.id} userName={user?.name} />
                                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                                       <span className="truncate font-medium">{user?.name}</span>
-                                                      <span className="truncate text-xs">{user?.email}</span>
+                                                      <span className="truncate text-xs text-slate-700">
+                                                            @{user?.username}
+                                                      </span>
                                                 </div>
                                                 <FontAwesomeIcon icon={faAnglesUpDown} />
                                           </SidebarMenuButton>
@@ -323,21 +290,11 @@ function UserDropdown() {
                                     <DropdownMenuGroup>
                                           <DropdownMenuLabel className="p-0 font-normal">
                                                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                                                      <Avatar className="h-8 w-8 rounded-lg">
-                                                            <AvatarImage
-                                                                  src={`https://api.dicebear.com/10.x/critters/svg?scale=1.59&rotate=20,-20&seed=${user?.id}`}
-                                                                  alt={user?.name}
-                                                                  className={"rounded-lg"}
-                                                            />
-                                                            <AvatarFallback className={"rounded-lg border"}>
-                                                                  <span className="text-2xl">
-                                                                        <FontAwesomeIcon icon={faCircleUser} />
-                                                                  </span>
-                                                            </AvatarFallback>
-                                                      </Avatar>
+                                                      <UserAvatar userId={user?.id} userName={user?.name} />
+
                                                       <div className="grid flex-1 text-left text-sm leading-tight">
                                                             <span className="truncate font-medium">{user?.name}</span>
-                                                            <span className="truncate text-xs">{user?.email}</span>
+                                                            <span className="truncate text-xs">@{user?.username}</span>
                                                       </div>
                                                 </div>
                                           </DropdownMenuLabel>
@@ -345,6 +302,9 @@ function UserDropdown() {
                                           <DropdownMenuGroup>
                                                 <DropdownMenuItem render={<Link to="/dashboard" />}>
                                                       <FontAwesomeIcon icon={faGear} /> Account
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem render={<Link to="/dashboard" />}>
+                                                      <FontAwesomeIcon icon={faBell} /> Notifications
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem render={<Link to="/dashboard" />}>
                                                       <FontAwesomeIcon icon={faPaperPlane} /> Feedback

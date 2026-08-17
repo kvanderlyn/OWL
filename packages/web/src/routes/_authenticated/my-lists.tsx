@@ -41,10 +41,15 @@ import AlertError from "@/components/AlertError";
 import ConfirmDeleteDialog from "@/components/ConfirmDeleteDialog";
 import { DataTable, SortableHeader } from "@/components/DataTable";
 import EditItemMenu from "@/components/EditItemMenu";
+import UserAvatar from "@/components/UserAvatar";
+import { useAuthStore } from "@/store/authStore";
 import type { dbItemType } from "../../../../db/src";
 
 export const Route = createFileRoute("/_authenticated/my-lists")({
       component: RouteComponent,
+      beforeLoad: () => ({
+            getTitle: () => "My Wishlists",
+      }),
       loader: () => {
             return {
                   crumb: "My Wishlists",
@@ -53,6 +58,7 @@ export const Route = createFileRoute("/_authenticated/my-lists")({
 });
 
 function RouteComponent() {
+      const { user } = useAuthStore();
       const [deleteWishlistIsOpen, setDeleteWishlistIsOpen] = useState(false);
       const [editItemIsOpen, setEditItemIsOpen] = useState(false);
       const [deleteItemIsOpen, setDeleteItemIsOpen] = useState(false);
@@ -202,7 +208,13 @@ function RouteComponent() {
       ];
 
       return (
-            <div>
+            <div className="typeset typeset-docs px-2">
+                  <h2>
+                        <div className="flex flex-row space-x-2">
+                              <UserAvatar userId={user?.id} userName={user?.name} />
+                              <div>My Wishlists</div>
+                        </div>
+                  </h2>
                   <ConfirmDeleteDialog
                         isOpen={deleteWishlistIsOpen}
                         setIsOpen={setDeleteWishlistIsOpen}
@@ -233,10 +245,10 @@ function RouteComponent() {
                   />
                   <title>OWL - My Wishlists</title>
                   <div className="lg:flex space-y-4 lg:space-x-4">
-                        <div className="w-full lg:w-1/3 lg:max-w-md">
+                        <div className="w-full lg:w-1/4 lg:max-w-sm">
                               <Card>
                                     <CardHeader>
-                                          <CardTitle>My Wishlists</CardTitle>
+                                          <CardTitle>Lists</CardTitle>
                                     </CardHeader>
                                     <CardContent className="space-y-2">
                                           {data.list.map((wl) => (

@@ -100,8 +100,7 @@ export async function getCurrentUserWishlists(req: AuthRequest, res: Response, n
       }
 }
 
-export async function getFriendWishlistById(req: AuthRequest, res: Response, next: NextFunction) {
-      // Check if user is friend of target user
+export async function getWishlistByUserId(req: AuthRequest, res: Response, next: NextFunction) {
       const userId = req?.user?.id;
       if (!userId) {
             return next(new ApiError("User is not authenticated or is missing user ID", 400));
@@ -117,7 +116,9 @@ export async function getFriendWishlistById(req: AuthRequest, res: Response, nex
                   .select()
                   .from(friends)
                   .where(and(eq(friends.uid1, userId), eq(friends.uid2, friendId), eq(friends.isApproved, true)));
-            res.status(200).json({ friendRow });
+            const rows =
+                  friendRow.length > 0 ? await db.select().from(wishlist).where(eq(wishlist.ownerId, friendId)) : [];
+            res.status(200).json({ rows });
       } catch {
             next(new ApiError("Failed to find wishlists for user.", 500));
       }

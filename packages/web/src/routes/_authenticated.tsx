@@ -9,11 +9,9 @@ import { Breadcrumbs } from "../components/Breadcrumbs";
 
 export const Route = createFileRoute("/_authenticated")({
       beforeLoad: async ({ context, location }) => {
-            if (context.auth.isLoading) {
-                  return;
-            }
-            const token = context.auth.token;
-            if (!token) {
+            const { getIsAuthenticated } = context.auth;
+            const isAuthenticated = await getIsAuthenticated();
+            if (!isAuthenticated) {
                   throw redirect({
                         to: "/login",
                         search: { redirect: location.href },

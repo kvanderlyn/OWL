@@ -49,6 +49,7 @@ export function AddItemDialog(props: { currentList: UserWishlist; onSubmit?: () 
                   cost: costNumber,
                   currency: currencyVal,
                   wishlistId: Number(props.currentList.id),
+                  isActive: true,
             };
             addNewItem(body);
       };
@@ -126,7 +127,7 @@ export function EditItemDialog(props: {
             title: "Edit an Item",
             description:
                   "Edit an item on your wishlist. Any field value can be changed, but items must have a name in order to be saved.",
-            actionLabel: "Edit Item",
+            actionLabel: "Save Changes",
       };
       return (
             <Dialog

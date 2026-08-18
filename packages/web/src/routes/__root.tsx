@@ -1,8 +1,6 @@
 import { createRootRouteWithContext, HeadContent, Outlet } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { type AuthState, useAuthStore } from "@/store/authStore";
+import type { AuthState } from "@/store/authStore";
 import logo from "../assets/OWL_Mark_v4.svg?url";
-import { router } from "../router";
 
 interface RouterContext {
       auth: AuthState;
@@ -25,11 +23,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 });
 
 function RootComponent() {
-      const { loadSession } = useAuthStore();
-      useEffect(() => {
-            loadSession().then(() => router.invalidate());
-      }, [loadSession]);
-
       return (
             <>
                   <HeadContent />

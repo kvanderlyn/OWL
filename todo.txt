@@ -19,6 +19,14 @@
 16. Add sortby to all the APIs so the data comes back in a better order
 
 
+claims:
+id
+item_id
+claimed_by
+added_on
+end_date
+
+
 New Users
 1. snoman
 2. BadKarma

@@ -1,6 +1,7 @@
 import type { User } from "@owl/api/src/utils/auth";
 import { create } from "zustand";
 import { authClient } from "@/lib/auth-client";
+import { router } from "@/router";
 
 interface LoginDetails {
       username: string;
@@ -8,20 +9,19 @@ interface LoginDetails {
 }
 
 export interface AuthState {
-      isLoading: boolean;
       user: User | null;
       token: string | null;
       login: (LoginDetails: LoginDetails) => void;
       logout: () => Promise<void>;
-      loadSession: () => Promise<void>;
+      getIsAuthenticated: () => Promise<boolean>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-      isLoading: true,
+export const useAuthStore = create<AuthState>((set, get) => ({
       user: null,
       token: null,
+
       login: async (LoginDetails: LoginDetails) => {
-            set((state) => ({ ...state, isLoading: true }));
+            set((state) => ({ ...state }));
             await authClient.signIn.username({
                   ...LoginDetails,
                   fetchOptions: {
@@ -32,7 +32,6 @@ export const useAuthStore = create<AuthState>((set) => ({
                                           ...state,
                                           user: data.user,
                                           token: data.token,
-                                          isLoading: false,
                                     }));
                                     console.log("logged in as", data.user.name);
                               }
@@ -42,23 +41,31 @@ export const useAuthStore = create<AuthState>((set) => ({
             });
       },
       logout: async () => {
-            set((state) => ({ ...state, isLoading: true }));
+            set((state) => ({ ...state }));
             await authClient.signOut({
                   fetchOptions: {
                         onSuccess: () => {
-                              set((state) => ({ ...state, user: null, token: null, isLoading: false }));
+                              set((state) => ({ ...state, user: null, token: null }));
                               console.log("logged out");
                         },
                   },
             });
       },
-      loadSession: async () => {
+      getIsAuthenticated: async () => {
+            const token = get().token;
+            if (token) {
+                  return true;
+            }
             const { data: session } = await authClient.getSession();
             set((state) => ({
                   ...state,
                   user: session?.user ? { ...session.user, username: session.user.username ?? "" } : null,
                   token: session?.session.token,
             }));
-            console.log("session loaded");
+            router.invalidate();
+            if (session?.session.token) {
+                  return true;
+            }
+            return false;
       },
 }));

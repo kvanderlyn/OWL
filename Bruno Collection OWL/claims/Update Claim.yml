@@ -1,0 +1,22 @@
+info:
+  name: Update Claim
+  type: http
+  seq: 3
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/claims/update-claim"
+  body:
+    type: form-urlencoded
+    data:
+      - name: id
+        value: "1"
+      - name: ""
+        value: timestamp
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

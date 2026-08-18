@@ -1,4 +1,4 @@
-import type { dbFriendType, dbItemType, dbWishlistType } from "../../../db/src";
+import type { dbClaimsType, dbFriendType, dbItemType, dbWishlistType } from "../../../db/src";
 
 export const ERROR_CODES = {
       400: "There was a problem with your request",
@@ -54,4 +54,24 @@ export type dbWishlist = dbWishlistType;
 export interface friendListItem extends userDetails {
       userId: string;
       isApproved: boolean;
+}
+export type dbClaims = dbClaimsType;
+
+export interface dbClaimsList extends Omit<dbItemType, "ownderId" | "createdAt"> {
+      claims: dbClaimsUpdate | null;
+}
+export interface dbClaimsUpdate extends Omit<dbClaims, "id" | "claimedBy" | "purchasedOn" | "closeOn" | "createdAt"> {
+      claimedBy?: string;
+      purchaseOn?: Date;
+      closeOn?: Date;
+      createdAt?: Date;
+}
+
+export interface WishlistClaimsRes extends UpdateItemBody {
+      updatedAt: Date;
+      claims: {
+            claimedBy: string;
+            purchasedOn: Date;
+            createdAt: Date;
+      } | null;
 }

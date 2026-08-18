@@ -1,19 +1,22 @@
-import { faStar } from "@awesome.me/kit-25b3efc452/icons/classic/light";
+import { faExternalLink, faStar } from "@awesome.me/kit-25b3efc452/icons/classic/light";
 import { faHeartSlash, faStar as faStarFilled } from "@awesome.me/kit-25b3efc452/icons/classic/solid";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "@owl/lib/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@owl/lib/components/card";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
-import { getItems } from "@/api/items";
+import { addClaim, deleteClaim, getClaims } from "@/api/claims";
+import { getFriends } from "@/api/friends";
+import type { dbClaimsList } from "@/api/types";
 import { getUserByUsername } from "@/api/users";
 import { getWishlistsByUser } from "@/api/wishlists";
+import AlertError from "@/components/AlertError";
 import { DataTable, SortableHeader } from "@/components/DataTable";
 import UserAvatar from "@/components/UserAvatar";
-import type { dbItemType } from "../../../../db/src";
+import { router } from "@/router";
 
 export const Route = createFileRoute("/_authenticated/friends/$username")({
       loader: async ({ params }) => {
@@ -26,7 +29,7 @@ export const Route = createFileRoute("/_authenticated/friends/$username")({
 
 function RouteComponent() {
       const {
-            data: { name, username, id },
+            data: { name, id },
             wishlist,
       } = Route.useLoaderData();
       const [currentList, setCurrentList] = useState(wishlist[0]);
@@ -34,12 +37,33 @@ function RouteComponent() {
             setCurrentList(wishlist[0]);
       }, [wishlist]);
 
-      const { data: ItemList, isLoading: itemsLoading } = useQuery({
-            queryKey: ["get-items", currentList.id],
-            queryFn: () => getItems(Number(currentList.id)),
+      const {
+            data: claimsList,
+            isLoading: claimsLoading,
+            refetch,
+      } = useQuery({
+            queryKey: ["get-claims", currentList.id],
+            queryFn: () => getClaims(Number(currentList.id)),
       });
-
-      const userWishlistCols: ColumnDef<dbItemType>[] = [
+      const { data: friendsList } = useQuery({
+            queryKey: ["get-friends"],
+            queryFn: () => getFriends(),
+      });
+      const { mutate: makeClaim, error } = useMutation({
+            mutationKey: ["new-claim"],
+            mutationFn: async (id: number) => addClaim(id),
+            onSuccess: () => {
+                  refetch();
+            },
+      });
+      const { mutate: revokeClaim, error: deleteClaimError } = useMutation({
+            mutationKey: ["revoke-claim"],
+            mutationFn: async (id: number) => deleteClaim(id),
+            onSuccess: () => {
+                  refetch();
+            },
+      });
+      const userWishlistCols: ColumnDef<dbClaimsList>[] = [
             {
                   accessorKey: "name",
                   header: ({ column }) => (
@@ -121,9 +145,16 @@ function RouteComponent() {
                   header: "Link",
                   cell: ({ cell }) => {
                         return cell.getValue() ? (
-                              <a className="text-indigo-600 hover:underline" href={String(cell.getValue())}>
-                                    {String(cell.getValue())}
-                              </a>
+                              <div className="max-w-40 overflow-clip text-ellipsis">
+                                    <a
+                                          className="text-indigo-600 hover:underline"
+                                          target="_blank"
+                                          rel="noreferrer"
+                                          href={String(cell.getValue())}
+                                    >
+                                          <FontAwesomeIcon icon={faExternalLink} /> {String(cell.getValue())}
+                                    </a>
+                              </div>
                         ) : (
                               ""
                         );
@@ -133,22 +164,71 @@ function RouteComponent() {
                   accessorKey: "notes",
                   header: "Notes",
                   cell: ({ cell }) => {
-                        return <div style={{ whiteSpace: "normal" }}>{String(cell.getValue())}</div>;
+                        return (
+                              <div style={{ whiteSpace: "normal" }} className="min-w-20">
+                                    {String(cell.getValue())}
+                              </div>
+                        );
                   },
             },
             {
                   id: "Claim",
-                  header: "Claim Item",
+                  header: "Claim",
                   cell: ({ row }) => {
                         const itemData = row.original;
-                        return <div>Claim {itemData.id}!</div>;
-                  },
-            },
-            {
-                  id: "claimed_by",
-                  header: "Claimed By",
-                  cell: () => {
-                        return <div>{username}</div>;
+                        const claimedBy = itemData?.claims?.claimedBy;
+                        switch (claimedBy) {
+                              case "You":
+                                    return (
+                                          <Button
+                                                variant={"outline"}
+                                                onClick={() => revokeClaim(itemData.id)}
+                                                className={"w-full"}
+                                          >
+                                                Remove Claim
+                                          </Button>
+                                    );
+                              case "Unknown User":
+                                    return (
+                                          <Button variant={"outline"} disabled className={"w-full"}>
+                                                {claimedBy}
+                                          </Button>
+                                    );
+                              case undefined:
+                                    return (
+                                          <Button
+                                                variant={"outline"}
+                                                onClick={() => makeClaim(itemData.id)}
+                                                className={"w-full"}
+                                          >
+                                                Claim
+                                          </Button>
+                                    );
+                              default: {
+                                    const friend = friendsList?.rows.find((friend) => friend.userId === claimedBy);
+                                    if (friend) {
+                                          return (
+                                                <Button
+                                                      variant={"link"}
+                                                      className={"text-indigo-600 w-full"}
+                                                      onClick={() =>
+                                                            router.navigate({
+                                                                  to: "/friends/$username",
+                                                                  params: { username: friend?.username },
+                                                            })
+                                                      }
+                                                >
+                                                      {friend?.name}
+                                                </Button>
+                                          );
+                                    }
+                                    return (
+                                          <Button variant={"outline"} className={"w-full"} disabled>
+                                                {claimedBy}
+                                          </Button>
+                                    );
+                              }
+                        }
                   },
             },
       ];
@@ -166,6 +246,7 @@ function RouteComponent() {
                               </Button>
                         </div>
                   </h2>
+                  {error && <AlertError error={error} />}
                   <div className="lg:flex space-y-4 lg:space-x-4">
                         <div className="w-full lg:w-1/4 lg:max-w-sm">
                               <Card>
@@ -203,12 +284,12 @@ function RouteComponent() {
                                     </CardTitle>
                               </CardHeader>
                               <CardContent>
-                                    {itemsLoading ? (
+                                    {claimsLoading ? (
                                           <div>Loading</div>
                                     ) : (
                                           <DataTable
                                                 columns={userWishlistCols}
-                                                data={ItemList ? ItemList?.items : []}
+                                                data={claimsList ? claimsList?.rows : []}
                                           />
                                     )}
                               </CardContent>

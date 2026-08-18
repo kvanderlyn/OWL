@@ -5,13 +5,14 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/items/get-items
+  url: http://localhost:3000/api/items/get-items?wishlistId=2
+  params:
+    - name: wishlistId
+      value: "2"
+      type: query
   body:
     type: json
-    data: |-
-      {
-        "wishlist_id": "1"
-      }
+    data: ""
   auth: inherit
 
 settings:

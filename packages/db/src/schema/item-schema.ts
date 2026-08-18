@@ -1,10 +1,10 @@
 import type { InferSelectModel } from "drizzle-orm";
-import { integer, pgTable, real, smallint, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, integer, pgTable, real, serial, smallint, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
 import { wishlist } from "./wishlist-schema";
 
 export const items = pgTable("items", {
-      id: integer().primaryKey().generatedAlwaysAsIdentity(),
+      id: serial("id").primaryKey(),
       ownerId: text("owner_id")
             .notNull()
             .references(() => user.id, { onDelete: "cascade" }),
@@ -16,6 +16,7 @@ export const items = pgTable("items", {
             .notNull()
             .references(() => wishlist.id, { onDelete: "cascade" }),
       notes: text(),
+      isActive: boolean("is_active").default(true).notNull(),
       currency: varchar({ length: 3 }),
       createdAt: timestamp("created_at").defaultNow().notNull(),
       updatedAt: timestamp("updated_at")

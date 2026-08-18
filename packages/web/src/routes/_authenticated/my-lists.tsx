@@ -1,4 +1,4 @@
-import { faStar } from "@awesome.me/kit-25b3efc452/icons/classic/light";
+import { faExternalLink, faStar } from "@awesome.me/kit-25b3efc452/icons/classic/light";
 import {
       faEllipsis,
       faPencil,
@@ -171,9 +171,16 @@ function RouteComponent() {
                   header: "Link",
                   cell: ({ cell }) => {
                         return cell.getValue() ? (
-                              <a className="text-indigo-600 hover:underline" href={String(cell.getValue())}>
-                                    {String(cell.getValue())}
-                              </a>
+                              <div className="md:max-w-40 overflow-clip text-ellipsis">
+                                    <a
+                                          className="text-indigo-600 hover:underline"
+                                          target="_blank"
+                                          rel="noreferrer"
+                                          href={String(cell.getValue())}
+                                    >
+                                          <FontAwesomeIcon icon={faExternalLink} /> {String(cell.getValue())}
+                                    </a>
+                              </div>
                         ) : (
                               ""
                         );

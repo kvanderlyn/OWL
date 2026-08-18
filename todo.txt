@@ -1,9 +1,7 @@
-4. Add ability for friends to claim items in a wishlist and for other users to see these claims
 5. Add ability for people to create private lists where they can track gifts they wish to give to others
-6. Add ability for people to add each other as friends
-    2. Added user is notified about the request
 7. Create a notification system
-    1. Initiating a friend request is a notification. Users are only added to the friends table after both have accepted
+    1. When someone adds you as a friend
+    2. When someone deletes an item you had claimed
     Notifcation Format:
     intiator, recipient, date, message title, message body, message type, read/unread
 8. Add edit mode
@@ -11,13 +9,19 @@
     - Action button is just delete
     - Clicking on a cell not in edit mode brings up the edit modal
     - Directions on the top of the page explain this functionality
-10. Fix auth (no flash of auth screen on reload, auto login of user after registration)
 11. Refactor friend search so that the friend status is a seperate call from the list of users
 13. Update the dashboard so it shows more useful information
 14. Add settings so users can set how long a claim is hidden by default, add their birthday and update their name/username
 15. Add filter to friends page
 16. Add sortby to all the APIs so the data comes back in a better order
-
+17. Gracefully handle navigating to a user page you don't have access to
+18. Fix mobile view
+19. View all of your claims in one place
+20. Figure out deployment and splitting
+    - New branch for deploying database to supabase and investigating adding NEON
+    - New branch for backend
+    - Deploy frontend
+    - Setup CI/CD flow
 
 claims:
 id
